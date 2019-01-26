@@ -8,6 +8,9 @@ import com.invillia.acme.exception.ResourceNotFoundException;
 import com.invillia.acme.repository.StoreRepository;
 import com.invillia.acme.service.IStoreService;
 import com.invillia.acme.util.GlobalResponseMessage;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,6 +39,20 @@ public class StoreController {
         this.storeService = storeService;
     }
 
+    @ApiOperation(value = "Create a new Store", response = StoreDTO.class)
+    @ApiResponses(value = {
+            @ApiResponse(
+                    code = 201,
+                    message = "Return the created Store and the success message",
+                    response = StoreDTO.class
+            ),
+            @ApiResponse(
+                    code = 400,
+                    message = "Return a unsuccess message",
+                    response = StoreDTO.class
+            )
+
+    })
     @PostMapping("/new")
     public ResponseEntity<StoreDTO> createPost(@RequestBody StoreDTO storeDTO) throws ParseException {
         Store store = convertToEntity(storeDTO);
@@ -43,6 +60,11 @@ public class StoreController {
         return new ResponseEntity<>(convertToDto(storeCreated), HttpStatus.CREATED);
     }
 
+    @ApiOperation(value = "Update a Store", response = StoreDTO.class)
+    @ApiResponse(
+            code = 404,
+            message = "Return a unsuccess message",
+            response = StoreDTO.class)
     @PutMapping("/update")
     public void updatePost(@RequestBody StoreDTO storeDTO) throws ParseException, NoResultFoundException {
 
@@ -55,6 +77,20 @@ public class StoreController {
         storeService.updateStore(store);
     }
 
+    @ApiOperation(value = "Find a Store by id", response = StoreDTO.class)
+    @ApiResponses(value = {
+            @ApiResponse(
+                    code = 200,
+                    message = "Return a Store and the success message",
+                    response = StoreDTO.class
+            ),
+            @ApiResponse(
+                    code = 404,
+                    message = "Return a unsuccess message",
+                    response = StoreDTO.class
+            )
+
+    })
     @GetMapping("/id/{storeId}")
     public ResponseEntity<StoreDTO> findByStoreId(@PathVariable("storeId") Long storeId) {
 
@@ -69,6 +105,20 @@ public class StoreController {
         return new ResponseEntity<>(storeDTO, HttpStatus.OK);
     }
 
+    @ApiOperation(value = "Find a Store by name", response = StoreDTO.class)
+    @ApiResponses(value = {
+            @ApiResponse(
+                    code = 200,
+                    message = "Return a Store and the success message",
+                    response = StoreDTO.class
+            ),
+            @ApiResponse(
+                    code = 404,
+                    message = "Return a unsuccess message",
+                    response = StoreDTO.class
+            )
+
+    })
     @GetMapping("/name/{page}/{storeName}/{size}/{sortDir}/{sort}")
     public ResponseEntity<List<StoreDTO>> getListStoreByName(@PathVariable("page") int page,
                                                              @PathVariable("storeName") String storeName,
@@ -97,6 +147,20 @@ public class StoreController {
         return new ResponseEntity<>(dtos, HttpStatus.OK);
     }
 
+    @ApiOperation(value = "Find a Store by address", response = StoreDTO.class)
+    @ApiResponses(value = {
+            @ApiResponse(
+                    code = 200,
+                    message = "Return a Store and the success message",
+                    response = StoreDTO.class
+            ),
+            @ApiResponse(
+                    code = 404,
+                    message = "Return a unsuccess message",
+                    response = StoreDTO.class
+            )
+
+    })
     @GetMapping("/address/{page}/{storeAddress}/{size}/{sortDir},{sort}")
     public ResponseEntity<List<StoreDTO>> getListStoreByAdress(@PathVariable("page") int page,
                                                                @PathVariable("storeAddress") String storeAddress,

@@ -1,13 +1,14 @@
 package com.invillia.acme.controller;
 
 import com.invillia.acme.domain.Orderr;
-import com.invillia.acme.domain.Store;
 import com.invillia.acme.dto.OrderDTO;
-import com.invillia.acme.dto.StoreDTO;
 import com.invillia.acme.exception.NoResultFoundException;
 import com.invillia.acme.repository.OrderRepository;
 import com.invillia.acme.service.IOrderService;
 import com.invillia.acme.util.GlobalResponseMessage;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,6 +39,20 @@ public class OrderController {
         this.orderService = orderService;
     }
 
+    @ApiOperation(value = "Find an order by id", response = OrderDTO.class)
+    @ApiResponses(value = {
+            @ApiResponse(
+                    code = 200,
+                    message = "Return an Order and the success message",
+                    response = OrderDTO.class
+            ),
+            @ApiResponse(
+                    code = 404,
+                    message = "Return a unsuccess message",
+                    response = OrderDTO.class
+            )
+
+    })
     @GetMapping("/id/{orderId}")
     public ResponseEntity<OrderDTO> findByStoreId(@PathVariable("orderId") Long orderId) {
 
