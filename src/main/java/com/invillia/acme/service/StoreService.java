@@ -33,6 +33,15 @@ public class StoreService implements IStoreService {
     }
 
     @Override
+    public List<Store> getListStoreByAddress(String address, int page, int size, String sortDir, String sort) {
+        PageRequest pageReq
+                = PageRequest.of(page, size, Sort.Direction.fromString(sortDir), sort);
+
+        Page<Store> stores = storeRepository.findByAddressContainingAllIgnoringCase(address, pageReq);
+        return stores.getContent();
+    }
+
+    @Override
     public Store createStore(Store store) {
         return storeRepository.save(store);
     }

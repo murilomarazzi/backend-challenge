@@ -1,5 +1,6 @@
 package com.invillia.acme.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import org.hibernate.validator.constraints.Length;
 import util.enums.PaymentStatusEnum;
 
@@ -27,7 +28,8 @@ public class Payment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(optional = true)
+    @ManyToOne(optional = true,fetch = FetchType.LAZY)
+    @JsonBackReference
     private Orderr orderr;
 
     @NotNull

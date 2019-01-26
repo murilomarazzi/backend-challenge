@@ -2,6 +2,7 @@ package com.invillia.acme.controller;
 
 import com.invillia.acme.domain.Store;
 import com.invillia.acme.dto.StoreDTO;
+import com.invillia.acme.exception.InvalidRequestException;
 import com.invillia.acme.exception.NoResultFoundException;
 import com.invillia.acme.exception.ResourceNotFoundException;
 import com.invillia.acme.repository.StoreRepository;
@@ -57,14 +58,13 @@ public class StoreController {
     @GetMapping("/id/{storeId}")
     public ResponseEntity<StoreDTO> findByStoreId(@PathVariable("storeId") Long storeId) {
 
-        StoreDTO storeDTO = new StoreDTO();
+        StoreDTO storeDTO;
 
         try {
             storeDTO = convertToDto(storeRepository.findById(storeId).orElse(null));
 
         } catch (NoResultFoundException ex) {
-            storeDTO.setMenssage(new GlobalResponseMessage(GlobalResponseMessage.Type.info,
-                    HttpStatus.NOT_FOUND.value(), ex.getMessage()));
+            storeDTO = builderException(ex.getMessage());
         }
         return new ResponseEntity<>(storeDTO, HttpStatus.OK);
     }
@@ -81,51 +81,47 @@ public class StoreController {
         try {
             List<Store> stores = storeService.getListStoreByName(storeName, page, size, sortDir, sort);
 
-            dtos = stores.stream()
-                    .map(store -> convertToDto(store))
-                    .collect(Collectors.toList());
+            dtos = mapToList(stores);
 
-            if (page > dtos.size())
-                throw new ResourceNotFoundException("No results found");
+            if (page > dtos.size()) {
+                throw new InvalidRequestException("Page invalid");
+            } else if (dtos.size() == 0) {
+                String message = String.format("No result was found with this name: %s", storeName);
+                throw new ResourceNotFoundException(message);
+            }
 
 
         } catch (ResourceNotFoundException ex) {
-            StoreDTO storeDTO = new StoreDTO();
-            storeDTO.setMenssage(new GlobalResponseMessage(GlobalResponseMessage.Type.info,
-                    HttpStatus.NOT_FOUND.value(), ex.getMessage()));
-            dtos.add(storeDTO);
+            dtos.add(builderException(ex.getMessage()));
         }
         return new ResponseEntity<>(dtos, HttpStatus.OK);
     }
 
-   /* @GetMapping("/address/{storeAddress}")
-    public ResponseEntity<List<StoreDTO>> findByStoreAddress(@PathVariable("storeAddress") String storeAddress) {
+    @GetMapping("/address/{page}/{storeAddress}/{size}/{sortDir},{sort}")
+    public ResponseEntity<List<StoreDTO>> getListStoreByAdress(@PathVariable("page") int page,
+                                                               @PathVariable("storeAddress") String storeAddress,
+                                                               @PathVariable("size") int size,
+                                                               @PathVariable("sortDir") String sortDir,
+                                                               @PathVariable("sort") String sort) {
 
-        StoreDTO storeDTO = new StoreDTO();
         List<StoreDTO> dtos = new ArrayList<>();
 
         try {
+            List<Store> stores = storeService.getListStoreByAddress(storeAddress, page, size, sortDir, sort);
+            dtos = mapToList(stores);
 
-            List<Store> stores = storeRepository.findByAddressContainingAllIgnoringCase(storeAddress);
-
-            if (CollectionUtils.isEmpty(stores)) {
-                throw new NoResultFoundException("Store(s) not found");
+            if (page > dtos.size()) {
+                throw new InvalidRequestException("Page invalid");
+            } else if (dtos.size() == 0) {
+                String message = String.format("No result was found with this address: %s", storeAddress);
+                throw new ResourceNotFoundException(message);
             }
 
-            for (Store store : stores) {
-                storeDTO = convertToDto(store);
-
-                dtos.add(storeDTO);
-            }
-
-        } catch (NoResultFoundException ex) {
-            storeDTO.setMenssage(new GlobalResponseMessage(GlobalResponseMessage.Type.info,
-                    HttpStatus.NOT_FOUND.value(), ex.getMessage()));
-
-            dtos.add(storeDTO);
+        } catch (ResourceNotFoundException ex) {
+            dtos.add(builderException(ex.getMessage()));
         }
         return new ResponseEntity<>(dtos, HttpStatus.OK);
-    }*/
+    }
 
     private StoreDTO convertToDto(Store store) {
         StoreDTO dto = modelMapper.map(store, StoreDTO.class);
@@ -136,5 +132,19 @@ public class StoreController {
 
     private Store convertToEntity(StoreDTO storeDTO) throws ParseException {
         return modelMapper.map(storeDTO, Store.class);
+    }
+
+    private List<StoreDTO> mapToList(List<Store> stores) {
+        return stores.stream()
+                .map(store -> convertToDto(store))
+                .collect(Collectors.toList());
+    }
+
+    private StoreDTO builderException(String message) {
+        StoreDTO storeDTO = new StoreDTO();
+        storeDTO.setMenssage(new GlobalResponseMessage(GlobalResponseMessage.Type.info,
+                HttpStatus.NOT_FOUND.value(), message));
+
+        return storeDTO;
     }
 }

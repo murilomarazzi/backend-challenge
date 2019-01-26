@@ -1,62 +1,32 @@
-package com.invillia.acme.domain;
+package com.invillia.acme.dto;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import org.hibernate.validator.constraints.Length;
-import org.springframework.format.annotation.DateTimeFormat;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.invillia.acme.domain.OrderItem;
+import com.invillia.acme.domain.Payment;
+import com.invillia.acme.domain.Store;
+import com.invillia.acme.util.GlobalResponseMessage;
 import util.enums.OrderStatusEnum;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.List;
 
 /**
- * Created by Murilo Marazzi on 25/01/2019.
+ * Created by Murilo Marazzi on 26/01/2019.
  */
 
-@Entity
-public class Orderr {
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class OrderDTO {
 
-    public Orderr(List<Payment> payments, List<OrderItem> orderItens,
-                  Date confirmationDate, String address, OrderStatusEnum status) {
-
-        this.payments = payments;
-        this.orderItens = orderItens;
-        this.confirmationDate = confirmationDate;
-        this.address = address;
-        this.status = status;
-    }
-
-    public Orderr() {
-    }
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @ManyToOne(optional = true)
-    @JsonBackReference
     private Store store;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "orderr", fetch = FetchType.LAZY)
-    @JsonManagedReference
     private List<Payment> payments;
-
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JsonManagedReference
     private List<OrderItem> orderItens;
-
-    @DateTimeFormat(pattern = "dd-MM-yyyy hh:mm")
     private Date confirmationDate;
-
-    @NotNull
-    @Length(min = 2, max = 300)
     private String address;
-
-    @NotNull
-    @Enumerated(EnumType.STRING)
     private OrderStatusEnum status;
+    private GlobalResponseMessage menssage;
 
     public Long getId() {
         return id;
@@ -114,11 +84,22 @@ public class Orderr {
         this.status = status;
     }
 
+    public GlobalResponseMessage getMenssage() {
+        return menssage;
+    }
+
+    public void setMenssage(GlobalResponseMessage menssage) {
+        this.menssage = menssage;
+    }
+
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
+        result = prime * result + ((menssage == null) ? 0 : menssage.hashCode());
         result = prime * result + ((id == null) ? 0 : id.hashCode());
+        result = prime * result + ((status == null) ? 0 : status.hashCode());
+        result = prime * result + ((address == null) ? 0 : address.hashCode());
         return result;
     }
 
@@ -130,7 +111,8 @@ public class Orderr {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        Orderr other = (Orderr) obj;
+        OrderDTO other = (OrderDTO) obj;
+
         if (id == null) {
             if (other.id != null)
                 return false;

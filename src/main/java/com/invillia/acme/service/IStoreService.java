@@ -11,6 +11,8 @@ public interface IStoreService {
 
     List<Store> getListStoreByName(String name, int page, int size, String sortDir, String sort);
 
+    List<Store> getListStoreByAddress(String address, int page, int size, String sortDir, String sort);
+
     Store createStore(Store store);
 
     void updateStore(Store store);
