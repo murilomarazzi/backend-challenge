@@ -31,12 +31,10 @@ public class OrderController {
 
     private final ModelMapper modelMapper;
     private final OrderRepository orderRepository;
-    private IOrderService orderService;
 
-    public OrderController(ModelMapper modelMapper, OrderRepository orderRepository, IOrderService orderService) {
+    public OrderController(ModelMapper modelMapper, OrderRepository orderRepository) {
         this.modelMapper = modelMapper;
         this.orderRepository = orderRepository;
-        this.orderService = orderService;
     }
 
     @ApiOperation(value = "Find an order by id", response = OrderDTO.class)
@@ -54,7 +52,7 @@ public class OrderController {
 
     })
     @GetMapping("/id/{orderId}")
-    public ResponseEntity<OrderDTO> findByStoreId(@PathVariable("orderId") Long orderId) {
+    public ResponseEntity<OrderDTO> findByOrderId(@PathVariable("orderId") Long orderId) {
 
         OrderDTO orderDTO;
 

@@ -54,7 +54,7 @@ public class StoreController {
 
     })
     @PostMapping("/new")
-    public ResponseEntity<StoreDTO> createPost(@RequestBody StoreDTO storeDTO) throws ParseException {
+    public ResponseEntity<StoreDTO> createStore(@RequestBody StoreDTO storeDTO) throws ParseException {
         Store store = convertToEntity(storeDTO);
         Store storeCreated = storeService.createStore(store);
         return new ResponseEntity<>(convertToDto(storeCreated), HttpStatus.CREATED);
@@ -66,7 +66,7 @@ public class StoreController {
             message = "Return a unsuccess message",
             response = StoreDTO.class)
     @PutMapping("/update")
-    public void updatePost(@RequestBody StoreDTO storeDTO) throws ParseException, NoResultFoundException {
+    public void updateStore(@RequestBody StoreDTO storeDTO) throws ParseException, NoResultFoundException {
 
         Store oldStore = storeRepository.findById(storeDTO.getId()).orElse(null);
 
@@ -161,7 +161,7 @@ public class StoreController {
             )
 
     })
-    @GetMapping("/address/{page}/{storeAddress}/{size}/{sortDir},{sort}")
+    @GetMapping("/address/{page}/{storeAddress}/{size}/{sortDir}/{sort}")
     public ResponseEntity<List<StoreDTO>> getListStoreByAdress(@PathVariable("page") int page,
                                                                @PathVariable("storeAddress") String storeAddress,
                                                                @PathVariable("size") int size,
