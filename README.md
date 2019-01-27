@@ -18,13 +18,13 @@ If you think something is really necessary but you don’t have enough time to i
 ## Tasks
 
 Your task is to develop one (or more, feel free) RESTful service(s) to:
-* Create a **Store**
-* Update a **Store** information
-* Retrieve a **Store** by parameters
-* Create an **Order** with items
-* Create a **Payment** for an **Order**
-* Retrieve an **Order** by parameters
-* Refund **Order** or any **Order Item**
+* Create a **Store** OK
+* Update a **Store** information OK
+* Retrieve a **Store** by parameters OK
+* Create an **Order** with items OK
+* Create a **Payment** for an **Order** NOK
+* Retrieve an **Order** by parameters OK
+* Refund **Order** or any **Order Item** NOK
 
 Fork this repository and submit your code with partial commits.
 
@@ -44,10 +44,10 @@ The process should be closest possible to "real-time", balancing your choices in
 scalability.
 
 ## Nice to have features (describe or implement):
-* Asynchronous processing
-* Database
-* Docker
-* AWS
-* Security
-* Swagger
-* Clean Code
+* Asynchronous processing NOK - Os cadastros não há necessidade da abordagem async, porém na criação de uma ordem e pagamento seria 										interessante.
+* Database OK
+* Docker OK
+* AWS NOK
+* Security NOK - Usaria OAuth, por ser uma especificação, possui estratégias para a grande maioria dos desfios encontrados.
+* Swagger OK
+* Clean Code OK
