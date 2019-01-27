@@ -48,6 +48,6 @@ scalability.
 * Database OK
 * Docker OK
 * AWS NOK
-* Security NOK - Usaria OAuth, por ser uma especificação, possui estratégias para a grande maioria dos desfios encontrados.
+* Security NOK - Usaria OAuth, por ser uma especificação, possui estratégias para a grande maioria dos desafios encontrados.
 * Swagger OK
 * Clean Code OK
